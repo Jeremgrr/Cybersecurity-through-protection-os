@@ -114,6 +114,7 @@ class AM extends Thread {
     }
 
     int tID;
+    int domainNum;
 
     int count = 0;
 
@@ -121,6 +122,7 @@ class AM extends Thread {
     public AM(int id) {
         //TODO Auto-generated constructor stub
         tID = id;
+
     }
     /* 
     public static int domainInput(){
@@ -217,6 +219,8 @@ class AM extends Thread {
         return "";
     }
 
+    //create new read and write functions for switched domains
+
     
 /* 
     //create function to read
@@ -251,7 +255,8 @@ class AM extends Thread {
     //create function to switch domains
     public void switchDomain(int a, int b) {
         int domainNum = tID + 1;
-        int c = b % domainC;
+        int newD = domainC + 1;
+        int c = (b - objectC);
         System.out.println("[Thread: " + tID + "(D" + domainNum + ")] " + "Attempting to switch domain: " + "D" + c);
         if( myArr[a][b] == "allow"+ "  ") {
             //System.out.println("Allow switch");
@@ -260,11 +265,19 @@ class AM extends Thread {
            try {
             domainSem[a].release();
             //System.out.println("RELEASED");
-            int d = b % domainC;
+            int d = (b - objectC) ;
             //System.out.println("DOMAIN D IS " + d);
             domainSem[d].acquire();
             domainNum = d;
             System.out.println("[Thread: " + tID + "(D" + domainNum + ")] " + "Switched to D" + c);
+            //System.out.println(myArr[c][0]);
+
+            //need correct domain location to switch permissions
+            
+
+            readObject(c, 1);
+            writeObject(c, 1);
+
                 
             } catch (Exception e) {
                 // TODO: handle exception
@@ -292,14 +305,16 @@ class AM extends Thread {
         System.out.println("Domain " + tID + " is available." + "(D" + domainNum +")");
         Random r = new Random();
         int r1 = r.nextInt(1,domainC + 1);
-        int randDomain = r.nextInt(domainC + 1, columns + 1);
+        int randDomain = r.nextInt(objectC + 1, columns + 1);
 
 
         //System.out.println("RANDOM NUMBER IS " + randDomain);
 
         readObject(tID + 1, r1);
         writeObject(tID + 1, r1);
-        switchDomain(tID + 1, randDomain);
+        switchDomain(domainNum, randDomain);
+        //System.out.println("SWITCH AT " + domainNum + "," + randDomain);
+        
 
         countMutex.release();
         
