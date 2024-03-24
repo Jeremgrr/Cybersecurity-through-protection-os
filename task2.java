@@ -104,7 +104,7 @@ class AM extends Thread {
 
     }
 
-    //fills access matrix with random values
+    //fills access list with random values
     public static void fillFiles(){
         Random r = new Random();
         for (int i = 1; i < domainC + 1; i++){
