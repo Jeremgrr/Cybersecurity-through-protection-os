@@ -24,7 +24,7 @@ public class task1 extends Thread{
 
         //Access Matrix Array
         String[][] myArr = AM.myArr;
-
+        System.out.println("Access control scheme: Access Matrix");
         System.out.println("Domain Count: " + domainC);
         System.out.println("Object Count: " + objectC);
 
@@ -204,6 +204,13 @@ class AM extends Thread {
         if ( myArr[a][b] == "R"+ "  " || myArr[a][b] == "R/W"+ "  "){
             System.out.println("[Thread: " + tID + "(D" + domainNum + ")] " + "Access Granted, Reading object ");
             System.out.println("[Thread: " + tID + "(D" + domainNum + ")] " + "Thread read " + myArr[a][b]);
+            Random r = new Random();
+            int r1 = r.nextInt(3,8);
+            System.out.println("[Thread: " + tID + "(D" + domainNum + ")] " + "Yielding " + r1 + " times");
+            for (int i = 0; i < r1; i++){
+                Thread.yield();
+            }
+            System.out.println("[Thread: " + tID + "(D" + domainNum + ")] " + "Operation Complete");
         }
         return "";
     }
@@ -215,11 +222,55 @@ class AM extends Thread {
             System.out.println("[Thread: " + tID + "(D" + domainNum + ")] " + "Access Granted, Writing object at " + "F" + b);
             myArr[a][b] = "TestWrite";
             System.out.println("[Thread: " + tID + "(D" + domainNum + ")] " + "Thread wrote " + myArr[a][b]);
+            Random r = new Random();
+            int r1 = r.nextInt(3,8);
+            System.out.println("[Thread: " + tID + "(D" + domainNum + ")] " + "Yielding " + r1 + " times");
+            for (int i = 0; i < r1; i++){
+                Thread.yield();
+            }
+            System.out.println("[Thread: " + tID + "(D" + domainNum + ")] " + "Operation Complete");
+
         }
         return "";
     }
 
     //create new read and write functions for switched domains
+    public String switchreadObject (int a, int b, int c){
+        int domainNum = tID + 1;
+        System.out.println("[Thread: " + tID + "(D" + c + ")] " + "Attempting to read resource: " + "F" + b);
+        if ( myArr[a][b] == "R"+ "  " || myArr[a][b] == "R/W"+ "  "){
+            System.out.println("[Thread: " + tID + "(D" + c + ")] " + "Access Granted, Reading object ");
+            System.out.println("[Thread: " + tID + "(D" + c + ")] " + "Thread read " + myArr[a][b]);
+            Random r = new Random();
+            int r1 = r.nextInt(3,8);
+            System.out.println("[Thread: " + tID + "(D" + c + ")] " + "Yielding " + r1 + " times");
+            for (int i = 0; i < r1; i++){
+                Thread.yield();
+            }
+            System.out.println("[Thread: " + tID + "(D" + c + ")] " + "Operation Complete");
+
+        }
+        return "";
+    }
+
+    public String switchwriteObject(int a, int b, int c){
+        int domainNum = tID + 1;
+        System.out.println("[Thread: " + tID + "(D" + c + ")] " + "Attempting to write resource: " + "F" + b);
+        if(myArr[a][b] == "W"+ "  " || myArr[a][b] == "R/W"+ "  "){
+            System.out.println("[Thread: " + tID + "(D" + c + ")] " + "Access Granted, Writing object at " + "F" + b);
+            myArr[a][b] = "TestWrite";
+            System.out.println("[Thread: " + tID + "(D" + c + ")] " + "Thread wrote " + myArr[a][b]);
+            Random r = new Random();
+            int r1 = r.nextInt(3,8);
+            System.out.println("[Thread: " + tID + "(D" + c + ")] " + "Yielding " + r1 + " times");
+            for (int i = 0; i < r1; i++){
+                Thread.yield();
+            }
+            System.out.println("[Thread: " + tID + "(D" + c + ")] " + "Operation Complete");
+
+        }
+        return "";
+    }
 
     
 /* 
@@ -275,8 +326,9 @@ class AM extends Thread {
             //need correct domain location to switch permissions
             
 
-            readObject(c, 1);
-            writeObject(c, 1);
+            switchreadObject(c, 1,c);
+            switchwriteObject(c, 1, c);
+            //writeObject(c, 1);
 
                 
             } catch (Exception e) {
@@ -286,6 +338,11 @@ class AM extends Thread {
             
             
             
+        }else{
+            //switch isnt allowed, read and write to fill 5 request requirement
+
+            switchreadObject(c, 1,c);
+            switchwriteObject(c, 1, c);
         }
 
     }

@@ -44,12 +44,13 @@ public class task2 extends Thread {
         // Print access list for domains
         for (int i = 1; i <= domainC; i++) {
             boolean firstObject = true;
-            for (int j = 1; j <= objectC; j++) {
+            for (int j = 1, h = AM.files; h < AM.columns + 1; j++, h++) {
                 if (!AM.myArr[i][j].equals("   ")) {
                     if (!firstObject) {
                         System.out.print(", ");
                     }
-                    System.out.print("D" + j + ":" + AM.myArr[i][j]);
+                    //domains heres
+                    System.out.print("D" + j + ":" + AM.myArr[i][h]);
                     firstObject = false;
                 }
             }
